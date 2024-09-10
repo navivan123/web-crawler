@@ -33,7 +33,6 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		return
 	}
 
-    fmt.Printf("\n\n\n Current URL Hostname : %v | Base URL Hostname : %v", currentURL.Hostname(), cfg.baseURL.Hostname())
 
 	// skip other websites
 	if currentURL.Hostname() != cfg.baseURL.Hostname() {
@@ -52,13 +51,13 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 
     html, err := getHTML(rawCurrentURL)
     if err != nil {
-        fmt.Printf("Error while getting HTML from URL", err)
+        fmt.Printf("Error while getting HTML from URL %v\n", err)
         return 
     }
 
     urls, err := getURLsFromHTML(html, cfg.baseURL)
     if err != nil {
-        fmt.Printf("Error while getting URLs from HTML", err)
+        fmt.Printf("Error while getting URLs from HTML %v\n", err)
         return 
     }
     for _, url := range urls {
@@ -83,7 +82,7 @@ func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
 func configure(rawBaseURL string, maxConcurrency, maxPages int) (*config, error) {
 	baseURL, err := url.Parse(rawBaseURL)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't parse base URL: %v", err)
+		return nil, fmt.Errorf("Couldn't parse base URL: %v\n", err)
 	}
 
 	return &config{

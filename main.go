@@ -9,13 +9,13 @@ import (
 
 func main() {
     if len(os.Args) < 4 {
-        fmt.Println("no args provided")
-        fmt.Println("usage: crawler <baseURL> <maxConcurrency> <maxPages>")
+        fmt.Println("No args provided")
+        fmt.Println("Usage: crawler <baseURL> <maxConcurrency> <maxPages>")
         os.Exit(1)
     }
     if len(os.Args) > 4 {
-        fmt.Println("too many arguments provided")
-        fmt.Println("usage: crawler <baseURL> <maxConcurrency> <maxPages>")
+        fmt.Println("Too many arguments provided")
+        fmt.Println("Usage: crawler <baseURL> <maxConcurrency> <maxPages>")
         os.Exit(1)
     }
 
@@ -35,9 +35,7 @@ func main() {
         os.Exit(1)
     }
 
-
-
-    fmt.Printf("starting crawl of: %v\n", baseURL)
+    fmt.Printf("Starting crawl of: %v\n\n", baseURL)
     
 	cfg, err := configure(baseURL, maxConcurrency, maxPages)
 	if err != nil {
@@ -48,7 +46,6 @@ func main() {
     cfg.wg.Add(1)
     go cfg.crawlPage(baseURL)
     cfg.wg.Wait()
-
 
     printReport(cfg.pages, baseURL)
 }
@@ -65,14 +62,13 @@ func printReport(pages map[string]int, baseURL string) {
     }
     
     sort.Slice(links, func(i, j int) bool  {
-        return links[i].numLinks > links[j].numLinks 
+  		if links[i].numLinks == links[j].numLinks {
+			return links[i].site < links[j].site
+		}
+		return links[i].numLinks > links[j].numLinks 
     })
 
-    sort.Slice(links, func(i, j int) bool  {
-        return links[i].site < links[j].site && links[i].numLinks == links[j].numLinks
-    })
-
-    fmt.Printf("=============================\nREPORT for %v\n=============================\n\n", baseURL)
+    fmt.Printf("\n=============================\nREPORT for %v\n=============================\n\n", baseURL)
 
     for _, link := range links {
         fmt.Printf("Found %v internal links to %v\n", link.numLinks, link.site)

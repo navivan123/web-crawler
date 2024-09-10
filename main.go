@@ -4,6 +4,7 @@ import (
     "fmt"
     "os"
     "strconv"
+    "sort"
 )
 
 func main() {
@@ -48,11 +49,32 @@ func main() {
     go cfg.crawlPage(baseURL)
     cfg.wg.Wait()
 
-    for url, count := range cfg.pages {
-        fmt.Printf("\nPage! => URL: %v | # Visited: %v\n", url, count)
-    }
+
+    printReport(cfg.pages, baseURL)
+}
+
+type PageResults struct {
+    site     string
+    numLinks int
 }
 
 func printReport(pages map[string]int, baseURL string) {
-    fmt.Printf("=============================\nREPORT for %v\n=============================", baseURL)
+    links := make([]PageResults, 0)
+    for url, count := range pages {
+        links = append(links, PageResults{site: url, numLinks: count})
+    }
+    
+    sort.Slice(links, func(i, j int) bool  {
+        return links[i].numLinks > links[j].numLinks 
+    })
+
+    sort.Slice(links, func(i, j int) bool  {
+        return links[i].site < links[j].site && links[i].numLinks == links[j].numLinks
+    })
+
+    fmt.Printf("=============================\nREPORT for %v\n=============================\n\n", baseURL)
+
+    for _, link := range links {
+        fmt.Printf("Found %v internal links to %v\n", link.numLinks, link.site)
+    }
 }

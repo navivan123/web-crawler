@@ -3,7 +3,7 @@ package main
 import (
         "net/url"
         "errors"
-        //"fmt"
+        "fmt"
         "strings"
         "golang.org/x/net/html"
 )
@@ -65,14 +65,14 @@ func recurseGetURLsFromHTML(node *html.Node, baseURL *url.URL) []string {
         for _, attr := range node.Attr {
             if attr.Key == "href" {
                 _, err := parseURL(attr.Val)
+                fmt.Printf("\n\n\nThis is url: %v\n\n\n", attr.Val)
 
                 if err == nil || errors.Is(err, SchemeURLError){
                     links = append(links, attr.Val)
                 }
                 if errors.Is(err, PathURLError) {
-                    links = append(links, strings.TrimSuffix(baseURL.String(), "/") + attr.Val)
+                    links = append(links, baseURL.String() + attr.Val)
                 }
-
             }
         }
     }

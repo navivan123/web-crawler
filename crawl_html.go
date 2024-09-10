@@ -33,6 +33,8 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		return
 	}
 
+    fmt.Printf("\n\n\n Current URL Hostname : %v | Base URL Hostname : %v", currentURL.Hostname(), cfg.baseURL.Hostname())
+
 	// skip other websites
 	if currentURL.Hostname() != cfg.baseURL.Hostname() {
 		return
@@ -59,7 +61,6 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
         fmt.Printf("Error while getting URLs from HTML", err)
         return 
     }
-    //fmt.Printf("\nURLs: %v\n", urls)
     for _, url := range urls {
         cfg.wg.Add(1)
         go cfg.crawlPage(url)
